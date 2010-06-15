@@ -7,7 +7,7 @@ $choices = AppletInstance::getValue('choices[]');
 <div class="vbx-applet callerid-applet">
 
 		<h2>Caller ID Router</h2>
-		<h2>Options</h2>
+		<p>Type phone numbers without spaces or punctuation.  For example, <code>8005551234</code> instead of <code>(800) 555-1234</code>.</p>
 		<table class="vbx-callerid-grid options-table">
 			<thead>
 				<tr>
