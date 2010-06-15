@@ -21,10 +21,10 @@ if(isset($_REQUEST['From']) && array_key_exists($_REQUEST['From'], $router_items
 	$response->Respond();
 	exit;
 }
-else if(isset($_REQUEST['Called']) && array_key_exists($_REQUEST['Called'], $router_items))
+else if(isset($_REQUEST['Caller']) && array_key_exists($_REQUEST['Caller'], $router_items))
 {
 	// change this to caller id
-	$routed_path = $router_items[$_REQUEST['Called']];
+	$routed_path = $router_items[$_REQUEST['Caller']];
 	$response->addRedirect($routed_path);
 	$response->Respond();
 	exit;
