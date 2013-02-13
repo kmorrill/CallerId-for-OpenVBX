@@ -1,46 +1,22 @@
 <?php
-$response = new Response();
+$responses = (array) AppletInstance::getDropZoneUrl('responses[]');
+$keys = (array) AppletInstance::getValue('keys[]');
+$invalid_option = AppletInstance::getDropZoneUrl('invalid-option');
+$menu_items = AppletInstance::assocKeyValueCombine($keys, $responses);
+$caller_id = null;
 
-/* Fetch all the data to operate the router */
-$keys = AppletInstance::getValue('keys');
-$invalid = AppletInstance::getDropZoneUrl('invalid');
-
-$selected_item = false;
-
-/* Build Menu Items */
-$choices = AppletInstance::getDropZoneUrl('choices[]');
-$keys = AppletInstance::getDropZoneValue('keys[]');
-$router_items = AppletInstance::assocKeyValueCombine($keys, $choices);
-
-// Change this to From or callerid
-if(isset($_REQUEST['From']) && array_key_exists($_REQUEST['From'], $router_items))
-{
-	// change this to caller id
-	$routed_path = $router_items[$_REQUEST['From']];
-	$response->addRedirect($routed_path);
-	$response->Respond();
-	exit;
+if(!empty($_REQUEST['Direction'])) {
+	$number = normalize_phone_to_E164(in_array($_REQUEST['Direction'], array('inbound', 'incoming')) ? $_REQUEST['From'] : $_REQUEST['To']);
+	if(preg_match('/([0-9]{10})$/', $number, $matches))
+		$caller_id = $matches[1];
 }
-else if(isset($_REQUEST['Caller']) && array_key_exists($_REQUEST['Caller'], $router_items))
-{
-	// change this to caller id
-	$routed_path = $router_items[$_REQUEST['Caller']];
-	$response->addRedirect($routed_path);
-	$response->Respond();
-	exit;
-}
-else
-{
 
-	if(!empty($invalid))
-	{
-	    $response->addRedirect($invalid);    
-		$response->Respond();
-		exit;
-	}
-	else
-	{	 
-		$response->Respond();
-		exit;
-	}		
+$response = new TwimlResponse;
+
+if(!empty($caller_id) && array_key_exists($caller_id, $menu_items) && !empty($menu_items[$caller_id])) {
+    $response->redirect($menu_items[$caller_id]);
+} elseif(!empty($invalid_option)) {
+    $response->redirect($invalid_option);
 }
+ 
+$response->respond();

@@ -1,5 +1,5 @@
 {
-    "name" : "Caller ID Router",
+    "name" : "Caller ID",
     "description" : "Routes the call based on caller ID",
     "type" : ["voice", "sms"]
 }
